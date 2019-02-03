@@ -1,5 +1,6 @@
 var mysql=require("mysql");
 var inquirer=require("inquirer");
+var Table=require('console.table');
 var connection=mysql.createConnection({
     host:"127.0.0.1",
     port:3306,
@@ -17,14 +18,9 @@ function displayItems(){
     lineDraw();
     console.log("ITEMS AVAILABLE FOR SALE");
     lineDraw();
-    console.log("ID          NAME              PRICE")
     connection.query("select product_id,product_name,price from products where stock_quantity > 0", function(err,data){
         if(err) throw err;
-        for(var i=0; i<data.length; i++){
-            lineDraw();
-            console.log(data[i].product_id+"  ||  "+data[i].product_name+"  ||  "+data[i].price);
-           
-        }
+        console.table([data.keys],data.slice(0));
     });
 
     askUser();
@@ -57,6 +53,7 @@ function checkQuantity(answer){
         }
         else{
             console.log("sorry!this item is out of stock");
+            connection.end();
         }
     });    
 }
