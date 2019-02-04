@@ -65,15 +65,16 @@ function placeOrder(data,quantity){
    console.log("You have purchased "+quantity+" items( "+data[0].product_name+" )");
    lineDraw();
    console.log("Total Amount ="+total);
-   updateStock(data,quantity);
+   updateStock(data,quantity,total);
 }
 
-function updateStock(data,quantity){
+function updateStock(data,quantity,total){
     var qt=data[0].stock_quantity - quantity;
     connection.query("update products set ? where ?",
     [
        {
-          stock_quantity:qt
+          stock_quantity:qt,
+          product_sales:total
        },
        {
           product_id:data[0].product_id

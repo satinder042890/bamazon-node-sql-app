@@ -23,3 +23,32 @@ insert into products(product_name,dept_name,price,stock_quantity) values("Birken
 insert into products(product_name,dept_name,price,stock_quantity) values("Disney toys","kids",10.49,10);
 insert into products(product_name,dept_name,price,stock_quantity) values("Superhero dress","kids",12.49,5);
 insert into products(product_name,dept_name,price,stock_quantity) values("Toy horse","kids",30.49,22);
+
+
+create table departments(
+    dept_id integer auto_increment,
+    dept_name varchar(40) not null,
+    over_head_cost decimal(12,8) not null,
+    primary key(dept_id)
+);
+
+
+insert into departments(dept_name,over_head_cost) values("books",30.99);
+insert into departments(dept_name,over_head_cost) values("Appliances",200.99);
+insert into departments(dept_name,over_head_cost) values("shoes",20.99);
+insert into departments(dept_name,over_head_cost) values("kids",40.99);
+insert into departments(dept_name,over_head_cost) values("furniture",150.99);
+
+alter table products add product_sales integer(10);
+alter table products modify column product_sales decimal(12,8);
+
+
+select * from products;
+
+
+
+
+select dept_id,departments.dept_name,over_head_cost,coalesce(sum(product_sales),0) as product_sales,
+coalesce(sum(product_sales),0)-over_head_cost as profit
+from products right join departments on departments.dept_name = products.dept_name
+group by departments.dept_name;
