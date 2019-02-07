@@ -76,7 +76,7 @@ function createDept(answer){
         dept_name:answer.name,
         over_head_cost:answer.cost
     },function(err,data){
-        console.log(data.affectedRows + " department inserted!\n");
+        console.log("\n");
     });
 
     moreDetails();
