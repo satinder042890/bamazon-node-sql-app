@@ -117,29 +117,34 @@ function itemQuantity(id){
         }
     }
     ]).then(function(answer){
-        updateItems(answer,id);
-        
+        addQuantity(answer,id)
     });
 }
-
-function updateItems(answer,id){
+function addQuantity(answer,id){
+    connection.query("select stock_quantity from products where product_id=?",[id],function(err,data){
+        if(err) throw err;
+        var totalQuantity=parseInt(answer.quantity)+data[0].stock_quantity;
+        updateItems(totalQuantity,id);
+    });   
+}
+function updateItems(total,id){
     connection.query("update products set  ? where ?",
     [
         {
-            stock_quantity:answer.quantity
+            stock_quantity:total
         },
         {
             product_id:id
         }
     ],function(err,data){
-        console.log(data.affectedRows + " product updated!\n");
+        console.log("\n");
     });
 
    moreDetails();
 }
 
 function addNewProduct(){
-    connection.query("select dept_name from products group by dept_name",function(err,data){
+    connection.query("select dept_name from departments",function(err,data){
         if(err) throw err;
         console.table([data.keys],data.slice(0));
         inquirer.prompt([
@@ -202,7 +207,7 @@ function insertItems(answer,dept){
         stock_quantity:answer.quantity,
         dept_name:dept
     },function(err,data){
-        console.log(data.affectedRows + " product inserted!\n");
+        console.log("\n");
     });
 
     moreDetails();
