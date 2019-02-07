@@ -98,7 +98,7 @@ function moreDetails(){
         }
         else{
             lineDraw();
-            console.log("Thanks for shopping ");
+            console.log("Thanks!!!!!!!! ");
             lineDraw();
             connection.end();
         }

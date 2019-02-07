@@ -68,7 +68,7 @@ function checkQuantity(answer){
             placeOrder(data,answer.quantity);
         }
         else{
-            console.log("sorry!this item is out of stock");
+            console.log("Insufficient Quantity!!!");
             buyMore();
         }
     });    
