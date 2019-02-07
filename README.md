@@ -15,8 +15,8 @@ Amazon-like storefront using MySQL and Node.js. It is comprised of three apps - 
    
 * If the store does not have sufficient quantity, the app log a phrase like Insufficient quantity!, and then prevent the order from going through.
 
-[alt text]("https://github.com/satinder042890/bamazon-node-sql-app/blob/master/images/insufficient-quantity.png")
+![alt text](https://github.com/satinder042890/bamazon-node-sql-app/blob/master/images/insufficient-quantity.png)
 
 * if the user enter invalid Id or quantity the app will display the message to the user.
 
-[alt text]("https://github.com/satinder042890/bamazon-node-sql-app/blob/master/images/customer-validation.png")
+![alt text](https://github.com/satinder042890/bamazon-node-sql-app/blob/master/images/customer-validation.png)
