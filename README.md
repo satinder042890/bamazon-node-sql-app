@@ -53,3 +53,20 @@ It allows a manager to:
 ![alt text](https://github.com/satinder042890/bamazon-node-sql-app/blob/master/images/invalid-department.png)
 
 ### BamazonSupervisor:
+Running this application will list a set of menu options:
+
+![alt text](https://github.com/satinder042890/bamazon-node-sql-app/blob/master/images/supervisor-options.png)
+
+* View Product Sales by Department
+
+   *  When a supervisor selects View Product Sales by Department, the app should display a summarized table in their terminal/bash             window.The table includes department_id, department_name, over_head_costs, product_sales, total_profit columns.
+   *  The total_profit column is calculated on the fly using the difference between over_head_costs and product_sales.                         Total_profit is not stored in any database.
+   
+   ![alt text](https://github.com/satinder042890/bamazon-node-sql-app/blob/master/images/sales-by-dept.png)
+   
+* Create New Department
+   * It allows a supervisor to add new department to the store.
+   * It prompts for two options , department name and over head cost of that department.
+   
+  ![alt text](https://github.com/satinder042890/bamazon-node-sql-app/blob/master/images/create-dept.png)
+
