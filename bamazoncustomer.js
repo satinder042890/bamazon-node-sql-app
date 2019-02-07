@@ -32,16 +32,32 @@ function askUser(){
         {
             type:"input",
             name:"id",
-            message:"Enter id of product that you want to buy"
+            message:"Enter id of product that you want to buy",
+            validate:function (value){
+                if(isNaN(value) === false){
+                    return true;
+                }
+                else{
+                    console.log("\n\nId should be a number!! Try Again");
+                }
+            }
         },
         {
             type:"input",
             name:"quantity",
-            message:"How many units you want to buy? "
+            message:"How many units you want to buy? ",
+            validate:function (value){
+                if(isNaN(value) === false){
+                    return true;
+                }
+                else{
+                    console.log("\n\nQuantity should be a number!! Try Again");
+                }
+            }
         }
     ]).then(function(answer){
-        console.log(answer.id+"  "+answer.quantity);
-        checkQuantity(answer);
+        checkId(answer);
+     
     });  
 }
 
@@ -53,10 +69,26 @@ function checkQuantity(answer){
         }
         else{
             console.log("sorry!this item is out of stock");
-            connection.end();
+            buyMore();
         }
     });    
-}
+};
+
+function checkId(answer){
+    connection.query("select product_id from products", function(err,data){
+        if(err) throw err;
+        // var i=parseInt(answer.id)-1;
+        var min=data[0].product_id;
+        var max=data.length;
+        if(answer.id >=min && answer.id <=max){
+           checkQuantity(answer);
+        }
+        else{
+            console.log("\nsorry!this Id is not valid");
+            buyMore();
+        }
+    });       
+};
 
 function placeOrder(data,quantity){
    var total=0;
@@ -65,6 +97,7 @@ function placeOrder(data,quantity){
    console.log("You have purchased "+quantity+" items( "+data[0].product_name+" )");
    lineDraw();
    console.log("Total Amount ="+total);
+   lineDraw();
    updateStock(data,quantity,total);
 }
 
@@ -80,12 +113,35 @@ function updateStock(data,quantity,total){
           product_id:data[0].product_id
        }
     ], function(err,data){
-          if(err) throw err;
-          console.log(data.affectedRows + " products updated");
-    }
+            if(err) throw err;
+            buyMore();
+        }
     );
-    connection.end();
-}
+   
+};
+
+function buyMore(){
+    lineDraw();
+    inquirer.prompt([
+        {
+            type:"confirm",
+            message:"Do you want to buy any other item?",
+            name:"confirm"
+        }
+    ]).then(function(answer){
+        if(answer.confirm){
+            lineDraw();
+            askUser();
+        }
+        else{
+            lineDraw();
+            console.log("Thanks for shopping ");
+            lineDraw();
+            connection.end();
+        }
+        
+    });
+};
 function lineDraw(){
     console.log("_______________________________________________________");
 }

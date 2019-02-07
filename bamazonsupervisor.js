@@ -16,6 +16,7 @@ connection.connect(function(err){
 
 
 function supervisorOptions(){
+    lineDraw();
     inquirer.prompt([
         {
             type:"list",
@@ -43,12 +44,13 @@ function viewSales(){
         if(err) throw err;
         console.table([data.keys],data.slice(0));
     });
-    connection.end();
+    moreDetails();
 };
 
 function deptDetails(){
+    lineDraw();
     console.log("Enter details of new Department");
-    // lineDraw();
+    lineDraw();
     inquirer.prompt([
         {
             name:"name",
@@ -61,7 +63,6 @@ function deptDetails(){
             message:"Enter over head cost"
         }
     ]).then(function(answer){
-        console.log(answer);
         createDept(answer);
         
     });
@@ -78,5 +79,33 @@ function createDept(answer){
         console.log(data.affectedRows + " department inserted!\n");
     });
 
-    connection.end();
+    moreDetails();
+}
+
+
+function moreDetails(){
+    lineDraw();
+    inquirer.prompt([
+        {
+            type:"confirm",
+            message:"Do you want to check more details?",
+            name:"confirm"
+        }
+    ]).then(function(answer){
+        if(answer.confirm){
+            lineDraw();
+            supervisorOptions();
+        }
+        else{
+            lineDraw();
+            console.log("Thanks for shopping ");
+            lineDraw();
+            connection.end();
+        }
+        
+    });
+};
+
+function lineDraw(){
+    console.log("_______________________________________________________");
 }

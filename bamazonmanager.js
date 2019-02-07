@@ -23,7 +23,6 @@ function managerOptions(){
           choices:["View product for sale","View low Inventory","Add to Inventory","Add new product"]
         }
     ]).then(function(answer){
-        // console.log(answer.managerChoice);
         switch(answer.managerChoice){
             case "View product for sale":
                 saleProducts();
@@ -54,6 +53,7 @@ function saleProducts(){
         if(err) throw err;
         console.table([data.keys],data.slice(0));
     });
+    moreDetails();
 };
 
 
@@ -61,15 +61,84 @@ function lowInventory(){
     lineDraw();
     console.log("LOW INVENTORY ITEMS");
     lineDraw();
-    // console.log("ID        NAME        DEPARTMENT       PRICE       QUANTITY      ");
     connection.query("select * from products where stock_quantity < 5",function(err,data){
         if(err) throw err;
         console.table([data.keys],data.slice(0));
     });
-    connection.end();
+    moreDetails();
 };
 
 function addInventory(){
+    connection.query("select * from products",function(err,data){
+        if(err) throw err;
+        console.table([data.keys],data.slice(0));
+        inquirer.prompt([
+            {
+                name:"id",
+                type:"input",
+                message:"Enter Id of item that you want to update?",
+                validate:function (value){
+                    if(isNaN(value) === false){
+                        return true;
+                    }
+                    else{
+                        console.log("\n\nId should be a number!! Try Again");
+                    }
+                }
+            }
+        ]).then(function(answer){
+            var min=data[0].product_id;
+            var max=data.length;
+            if(answer.id >=min && answer.id <=max){
+                itemQuantity(answer.id);
+            }
+            else{
+                console.log("\nsorry!this Id is not valid");
+                moreDetails();
+            }
+        });
+    });
+    
+};
+function itemQuantity(id){
+    lineDraw();
+    inquirer.prompt([
+    {
+        name:"quantity",
+        type:"input",
+        message:"Enter quantity of Item",
+        validate:function (value){
+            if(isNaN(value) === false){
+                return true;
+            }
+            else{
+                console.log("\n\nQuantity should be a number!! Try Again");
+            }
+        }
+    }
+    ]).then(function(answer){
+        updateItems(answer,id);
+        
+    });
+}
+
+function updateItems(answer,id){
+    connection.query("update products set  ? where ?",
+    [
+        {
+            stock_quantity:answer.quantity
+        },
+        {
+            product_id:id
+        }
+    ],function(err,data){
+        console.log(data.affectedRows + " product updated!\n");
+    });
+
+   moreDetails();
+}
+
+function addNewProduct(){
     connection.query("select dept_name from products group by dept_name",function(err,data){
         if(err) throw err;
         console.table([data.keys],data.slice(0));
@@ -90,12 +159,15 @@ function addInventory(){
             }
             if(!deptFound) {
                 console.log("Department is not found in the databse");
+                moreDetails();
             }
             
         });
     });
     
 };
+
+
 function itemDetails(dept){
     lineDraw();
     console.log("Enter details of product");
@@ -117,7 +189,6 @@ function itemDetails(dept){
             message:"Enter quantity of Item"
         }
     ]).then(function(answer){
-        console.log(answer);
         insertItems(answer,dept);
         
     });
@@ -134,55 +205,32 @@ function insertItems(answer,dept){
         console.log(data.affectedRows + " product inserted!\n");
     });
 
-    connection.end();
+    moreDetails();
 }
 
 
-function addNewProduct(){
-    lineDraw();
-    console.log("Enter details of new product");
+function moreDetails(){
     lineDraw();
     inquirer.prompt([
         {
-            name:"name",
-            type:"input",
-            message:"Enter name of Item"
-        },
-        {
-            name:"price",
-            type:"input",
-            message:"Enter price of Item"
-        },
-        {
-            name:"dept",
-            type:"input",
-            message:"Enter department of item"
-        },
-        {
-            name:"quantity",
-            type:"input",
-            message:"Enter quantity of Item"
+            type:"confirm",
+            message:"Do you want to see other details?",
+            name:"confirm"
         }
     ]).then(function(answer){
-        console.log(answer);
-        insertNewItems(answer);
+        if(answer.confirm){
+            lineDraw();
+            managerOptions();
+        }
+        else{
+            lineDraw();
+            console.log("Thanks!!! ");
+            lineDraw();
+            connection.end();
+        }
         
     });
-}
-
-function insertNewItems(answer){
-    connection.query("insert into products set ?",
-    {
-        product_name:answer.name,
-        price:answer.price,
-        stock_quantity:answer.quantity,
-        dept_name:answer.dept
-    },function(err,data){
-        console.log(data.affectedRows + " product inserted!\n");
-    });
-
-    connection.end();
-}
+};
 function lineDraw(){
     console.log("_______________________________________________________");
 }
